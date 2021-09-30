@@ -252,7 +252,7 @@ def info(update: Update, context: CallbackContext):
     if user.username:
         text += f"\n✨Username: @{html.escape(user.username)}"
 
-    text += f"\n🚨Permalink: {mention_html(user.id, 'link')}"
+    text += f"\nPermalink: {mention_html(user.id, 'link')}"
 
     if chat.type != "private" and user_id != bot.id:
         _stext = "\nPresence: <code>{}</code>"
@@ -287,26 +287,26 @@ def info(update: Update, context: CallbackContext):
     disaster_level_present = False
 
     if user.id == OWNER_ID:
-        text += "\n\nThe Disaster level of this person is 'Superior'."
+        text += "\n\nThe Disaster level of this person is 'GOD'."
         disaster_level_present = True
     elif user.id in DEV_USERS:
-        text += "\n\nThis user is member of 'Emcee powerhouse'."
+        text += "\n\nThis user is member of 'Dev user'."
         disaster_level_present = True
     elif user.id in DRAGONS:
-        text += "\n\nThe Disaster level of this person is 'Legend'."
+        text += "\n\nThe Disaster level of this person is 'Dragin'."
         disaster_level_present = True
     elif user.id in DEMONS:
-        text += "\n\nThe Disaster level of this person is 'Satan'."
+        text += "\n\nThe Disaster level of this person is 'Demon'."
         disaster_level_present = True
     elif user.id in TIGERS:
-        text += "\n\nThe Disaster level of this person is 'Monster'."
+        text += "\n\nThe Disaster level of this person is 'Tiger'."
         disaster_level_present = True
     elif user.id in WOLVES:
-        text += "\n\nThe Disaster level of this person is 'Immortal'."
+        text += "\n\nThe Disaster level of this person is 'Wolves'."
         disaster_level_present = True
 
     if disaster_level_present:
-        text += ' [<a href="https://t.me/EMCEE_UPDATES/3">?</a>]'.format(
+        text += ' [<a href="https://t.me/NAZRIYAUPDATES/4">?</a>]'.format(
             bot.username
         )
 
@@ -544,7 +544,7 @@ When marked as AFK, any mentions will be replied to with a message to say you're
  ❍ /info*:* get information about a user. 
  
 *What is that health thingy?*
- Come and see [HP System explained](https://t.me/OnePunchUpdates/192)
+ Come and see [HP System explained](https://t.me/NAZRIYAUPDATES/5)
 """
 
 SET_BIO_HANDLER = DisableAbleCommandHandler("setbio", set_about_bio)
