@@ -1,4 +1,47 @@
 import html
+import re
+import os
+import requests
+
+from telethon.tl.functions.channels import GetFullChannelRequest
+from telethon.tl.types import ChannelParticipantsAdmins
+from telethon import events
+
+from telegram import MAX_MESSAGE_LENGTH, ParseMode, Update
+from telegram.ext import CallbackContext, CommandHandler
+from telegram.ext.dispatcher import run_async
+from telegram.error import BadRequest
+from telegram.utils.helpers import escape_markdown, mention_html
+
+from MashaRoBot import (
+    DEV_USERS,
+    OWNER_ID,
+    DRAGONS,
+    DEMONS,
+    TIGERS,
+    WOLVES,
+    INFOPIC,
+    dispatcher,
+    sw,
+)
+from MashaRoBot.__main__ import STATS, TOKEN, USER_INFO
+import MashaRoBot.modules.sql.userinfo_sql as sql
+from MashaRoBot.modules.disable import DisableAbleCommandHandler
+from MashaRoBot.modules.sql.global_bans_sql import is_user_gbanned
+from MashaRoBot.modules.sql.afk_sql import is_afk, check_afk_status
+from MashaRoBot.modules.sql.users_sql import get_user_num_chats
+from MashaRoBot.modules.helper_funcs.chat_status import sudo_plus
+from MashaRoBot.modules.helper_funcs.extraction import extract_user
+from MashaRoBot import telethn as MashaTelethonClient, TIGERS, DRAGONS, DEMONS
+
+
+def no_by_per(totalhp, percentage):
+    """
+    rtype: num of `percentage` from total
+    eg: 1000, 10 -> 10% of 1000 (100)
+    """
+    return totalhp * percentage / 100
+
 
 def get_percentage(totalhp, earnedhp):
     """
@@ -198,18 +241,18 @@ def info(update: Update, context: CallbackContext):
     rep = message.reply_text("<code>Appraising...</code>", parse_mode=ParseMode.HTML)
 
     text = (
-        f"╒═══「<b> Appraisal results:</b> 」\n"
-        f"ID: <code>{user.id}</code>\n"
-        f"First Name: {html.escape(user.first_name)}"
+        f"╒═══「<b>❄️Appraisal results❄️:</b> 」\n"
+        f"⚓ID: <code>{user.id}</code>\n"
+        f"✨First Name: {html.escape(user.first_name)}"
     )
 
     if user.last_name:
-        text += f"\nLast Name: {html.escape(user.last_name)}"
+        text += f"\n⚓Last Name: {html.escape(user.last_name)}"
 
     if user.username:
-        text += f"\nUsername: @{html.escape(user.username)}"
+        text += f"\n✨Username: @{html.escape(user.username)}"
 
-    text += f"\nPermalink: {mention_html(user.id, 'link')}"
+    text += f"\n🚨Permalink: {mention_html(user.id, 'link')}"
 
     if chat.type != "private" and user_id != bot.id:
         _stext = "\nPresence: <code>{}</code>"
@@ -244,26 +287,26 @@ def info(update: Update, context: CallbackContext):
     disaster_level_present = False
 
     if user.id == OWNER_ID:
-        text += "\n\nThe Disaster level of this person is 'God'."
+        text += "\n\nThe Disaster level of this person is 'Superior'."
         disaster_level_present = True
     elif user.id in DEV_USERS:
-        text += "\n\nThis user is member of 'Hero Association'."
+        text += "\n\nThis user is member of 'Emcee powerhouse'."
         disaster_level_present = True
     elif user.id in DRAGONS:
-        text += "\n\nThe Disaster level of this person is 'Dragon'."
+        text += "\n\nThe Disaster level of this person is 'Legend'."
         disaster_level_present = True
     elif user.id in DEMONS:
-        text += "\n\nThe Disaster level of this person is 'Demon'."
+        text += "\n\nThe Disaster level of this person is 'Satan'."
         disaster_level_present = True
     elif user.id in TIGERS:
-        text += "\n\nThe Disaster level of this person is 'Tiger'."
+        text += "\n\nThe Disaster level of this person is 'Monster'."
         disaster_level_present = True
     elif user.id in WOLVES:
-        text += "\n\nThe Disaster level of this person is 'Wolf'."
+        text += "\n\nThe Disaster level of this person is 'Immortal'."
         disaster_level_present = True
 
     if disaster_level_present:
-        text += ' [<a href="https://t.me/OnePunchUpdates/155">?</a>]'.format(
+        text += ' [<a href="https://t.me/EMCEE_UPDATES/3">?</a>]'.format(
             bot.username
         )
 
@@ -292,16 +335,16 @@ def info(update: Update, context: CallbackContext):
         try:
             profile = context.bot.get_user_profile_photos(user.id).photos[0][-1]
             _file = bot.get_file(profile["file_id"])
-            _file.download(f"{user.id}.png")
+            _file.download(f"{user.id}.jpg")
 
-            message.reply_document(
-                document=open(f"{user.id}.png", "rb"),
+            message.reply_photo(
+                photo=open(f"{user.id}.jpg", "rb"),
                 caption=(text),
                 parse_mode=ParseMode.HTML,
                 disable_web_page_preview=True,
             )
 
-            os.remove(f"{user.id}.png")
+            os.remove(f"{user.id}.jpg")
         # Incase user don't have profile pic, send normal text
         except IndexError:
             message.reply_text(
@@ -436,7 +479,7 @@ def set_about_bio(update: Update, context: CallbackContext):
 
         if user_id == bot.id and sender_id not in DEV_USERS:
             message.reply_text(
-                "Erm... yeah, I only trust Heroes Association to set my bio."
+                "Erm... yeah, I only trust Emcee powerhouse to set my bio."
             )
             return
 
@@ -536,3 +579,4 @@ __handlers__ = [
     GET_ABOUT_HANDLER,
     STATS_HANDLER,
 ]
+                
